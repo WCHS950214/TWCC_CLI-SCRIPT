@@ -2,8 +2,6 @@
 
 
 
-
-```bash=
 TWCC_CLI_CMD=/usr/local/bin/twccli
 
 VCS_key='Enter your VCS key'
@@ -34,4 +32,3 @@ do
 
 
 done < id.log
-```
