@@ -1,0 +1,31 @@
+TWCC_CLI_CMD=/usr/local/bin/twccli
+
+VCS_key='Enter your VCS key'
+Cus_img='Enter your custom Image Name'
+Vnet_name='Enter your virtual network name'
+VCS_name='Enter your VCS Name'
+VCS_Num= Number of TWCC VCS
+
+
+echo " 1. Build VCS in Project"
+for i in $(seq 1 $VCS_Num);
+do
+        $TWCC_CLI_CMD mk vcs -key $VCS_key -img $Cus_img -itype CentOS -net $Vnet_name -n $VCS_name$i -json | jq '.id' >> id.log & # send `mk vcs` to background, async VCS creatation
+
+        echo "TWCC VCS is creating":$VCS_name$i
+        sleep 6 # TWCC API Gateway limits create 10 VCS per minite 
+done
+
+
+echo " 2. Output Private IP"
+
+while IFS= read -r f
+do
+
+  echo "Output Private IP list to ip.log：$f"
+
+  $TWCC_CLI_CMD ls vcs -s $f -json | jq .[]."private_ip" >> ip.log
+
+
+done < id.log
+
